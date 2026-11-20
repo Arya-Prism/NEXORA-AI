@@ -1,0 +1,25 @@
+{
+  "name": "nexora-ai",
+  "version": "1.0.0",
+  "description": "NEXORA AI - Your Personal AI Life & Productivity Intelligence Platform",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "build:server": "npm --prefix server run build",
+    "build:client": "npm --prefix client run build",
+    "build": "npm run build:server && npm run build:client",
+    "start:server": "npm --prefix server start",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev"
+  },
+  "keywords": [
+    "nexora",
+    "ai",
+    "productivity",
+    "intelligence",
+    "life",
+    "supabase",
+    "openai"
+  ],
+  "author": "NEXORA AI Engineering Team",
+  "license": "MIT"
+}

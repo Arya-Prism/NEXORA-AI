@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+<!-- STITCH_THREEJS_START:ANIMATION_12 class="fixed inset-0 w-full h-full bg-transparent" -->
+<div class="fixed inset-0 w-full h-full bg-transparent" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_12" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_12');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  // Appetizing 3D Interactive Food Showcase Scene
+const width = container.clientWidth || window.innerWidth;
+const height = container.clientHeight || window.innerHeight;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+camera.position.set(0, 1.2, 7.5);
+
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+renderer.setSize(width, height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+container.appendChild(renderer.domElement);
+
+// Lighting - Warm, appetizing, fresh studio lighting
+const ambientLight = new THREE.AmbientLight(0xfff8ee, 1.6);
+scene.add(ambientLight);
+
+const mainSun = new THREE.DirectionalLight(0xffffff, 2.4);
+mainSun.position.set(5, 8, 5);
+mainSun.castShadow = true;
+scene.add(mainSun);
+
+const warmRimLight = new THREE.DirectionalLight(0xffa834, 1.8);
+warmRimLight.position.set(-6, 3, -4);
+scene.add(warmRimLight);
+
+const freshGreenFill = new THREE.PointLight(0x22c55e, 1.2, 15);
+freshGreenFill.position.set(0, -3, 3);
+scene.add(freshGreenFill);
+
+// Main Group for the Feast Composition
+const heroPlateGroup = new THREE.Group();
+scene.add(heroPlateGroup);
+
+// Ceramic Matte Designer Bowl / Plate
+const bowlGeo = new THREE.CylinderGeometry(2.4, 1.3, 0.75, 48, 1, false);
+const bowlMat = new THREE.MeshPhongMaterial({
+  color: 0xfcfdfd,
+  shininess: 90,
+  specular: 0x4ade80
+});
+const bowl = new THREE.Mesh(bowlGeo, bowlMat);
+bowl.position.y = -1.0;
+heroPlateGroup.add(bowl);
+
+// Bowl Rim Accent (Deep Forest Green ring)
+const rimGeo = new THREE.TorusGeometry(2.4, 0.045, 16, 64);
+const rimMat = new THREE.MeshPhongMaterial({ color: 0x144331, shininess: 80 });
+const rim = new THREE.Mesh(rimGeo, rimMat);
+rim.rotation.x = Math.PI / 2;
+rim.position.y = -0.62;
+heroPlateGroup.add(rim);
+
+// Quinoa / Grain Base Bed
+const grainGeo = new THREE.CylinderGeometry(2.3, 1.8, 0.35, 32);
+const grainMat = new THREE.MeshLambertMaterial({ color: 0xe8c88c });
+const grains = new THREE.Mesh(grainGeo, grainMat);
+grains.position.y = -0.7;
+heroPlateGroup.add(grains);
+
+// Hass Avocado Halves / Slices
+const avocadoGroup = new THREE.Group();
+const avoSkinMat = new THREE.MeshPhongMaterial({ color: 0x1a3311, shininess: 30 });
+const avoFleshMat = new THREE.MeshPhongMaterial({ color: 0x8be340, shininess: 45 });
+const avoPitMat = new THREE.MeshPhongMaterial({ color: 0x5c3317, shininess: 70 });
+
+// Crescent slice 1
+const avoShape = new THREE.SphereGeometry(0.7, 24, 24);
+avoShape.scale(1.0, 1.35, 0.45);
+const avoSlice = new THREE.Mesh(avoShape, avoFleshMat);
+avoSlice.position.set(-0.8, -0.4, 0.3);
+avoSlice.rotation.set(0.4, 0.2, -0.3);
+avocadoGroup.add(avoSlice);
+
+// Crescent slice 2
+const avoSlice2 = avoSlice.clone();
+avoSlice2.position.set(-0.4, -0.35, 0.7);
+avoSlice2.rotation.set(0.2, -0.4, -0.15);
+avocadoGroup.add(avoSlice2);
+
+// Crescent slice 3
+const avoSlice3 = avoSlice.clone();
+avoSlice3.position.set(-1.1, -0.45, -0.1);
+avoSlice3.rotation.set(0.5, 0.5, -0.4);
+avocadoGroup.add(avoSlice3);
+heroPlateGroup.add(avocadoGroup);
+
+// Glossy Cherry Tomatoes (Cluster of 4 succulent cherry tomatoes)
+const tomatoMat = new THREE.MeshPhongMaterial({
+  color: 0xef233c,
+  shininess: 120,
+  specular: 0xffffff
+});
+const tomatoStemMat = new THREE.MeshLambertMaterial({ color: 0x15803d });
+
+const tomatoPositions = [
+  [0.85, -0.42, 0.45, 0.34],
+  [1.15, -0.46, 0.05, 0.3],
+  [0.65, -0.44, 0.95, 0.28],
+  [1.25, -0.43, 0.75, 0.32]
+];
+
+tomatoPositions.forEach(([x, y, z, r]) => {
+  const tGeo = new THREE.SphereGeometry(r, 20, 20);
+  const tMesh = new THREE.Mesh(tGeo, tomatoMat);
+  tMesh.position.set(x, y, z);
+  
+  // tiny calyx leaf
+  const calyxGeo = new THREE.ConeGeometry(r * 0.4, 0.1, 5);
+  const calyx = new THREE.Mesh(calyxGeo, tomatoStemMat);
+  calyx.position.set(x, y + r * 0.9, z);
+  calyx.rotation.x = Math.PI;
+  heroPlateGroup.add(tMesh);
+  heroPlateGroup.add(calyx);
+});
+
+// Organic Steamed Edamame & Vibrant Peas
+const peaMat = new THREE.MeshPhongMaterial({ color: 0x4ade80, shininess: 80, specular: 0xdcfce7 });
+for (let i = 0; i < 18; i++) {
+  const peaGeo = new THREE.SphereGeometry(0.12 + Math.random() * 0.05, 12, 12);
+  const pea = new THREE.Mesh(peaGeo, peaMat);
+  const angle = Math.random() * Math.PI * 2;
+  const dist = 0.3 + Math.random() * 1.5;
+  pea.position.set(Math.cos(angle) * dist, -0.52 + Math.random() * 0.15, Math.sin(angle) * dist);
+  heroPlateGroup.add(pea);
+}
+
+// Crisp Salmon Cubes (Rich Coral with delicate glaze)
+const salmonMat = new THREE.MeshPhongMaterial({
+  color: 0xf97316,
+  shininess: 90,
+  specular: 0xfef08a
+});
+for (let s = 0; s < 5; s++) {
+  const cubeGeo = new THREE.BoxGeometry(0.38, 0.32, 0.38);
+  const cube = new THREE.Mesh(cubeGeo, salmonMat);
+  cube.position.set(
+    0.2 + (s % 2) * 0.42 - Math.random() * 0.1,
+    -0.42 + (s > 2 ? 0.22 : 0),
+    -0.5 + (s * 0.3)
+  );
+  cube.rotation.set(Math.random() * 0.3, Math.random() * 0.6, Math.random() * 0.2);
+  heroPlateGroup.add(cube);
+}
+
+// Microgreens / Fresh Herbs & Sesame Seeds
+const herbMat = new THREE.MeshLambertMaterial({ color: 0x16a34a, side: THREE.DoubleSide });
+for (let h = 0; h < 25; h++) {
+  const herbGeo = new THREE.PlaneGeometry(0.12, 0.26);
+  const herb = new THREE.Mesh(herbGeo, herbMat);
+  herb.position.set(
+    (Math.random() - 0.5) * 2.2,
+    -0.35 + Math.random() * 0.2,
+    (Math.random() - 0.5) * 2.2
+  );
+  herb.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+  heroPlateGroup.add(herb);
+}
+
+// Floating Appetizing Orbit Ingredients (Floating Fresh Berry, Lemon Wedge, Basil Leaves & Sparkles)
+const floatingOrbitGroup = new THREE.Group();
+scene.add(floatingOrbitGroup);
+
+// Floating Blueberries
+const berryMat = new THREE.MeshPhongMaterial({ color: 0x312e81, shininess: 100, specular: 0xa5b4fc });
+const berries = [];
+for (let b = 0; b < 10; b++) {
+  const bGeo = new THREE.SphereGeometry(0.18 + Math.random() * 0.08, 16, 16);
+  const berry = new THREE.Mesh(bGeo, berryMat);
+  const theta = (b / 10) * Math.PI * 2;
+  const rad = 3.2 + Math.random() * 1.2;
+  berry.position.set(
+    Math.cos(theta) * rad,
+    -0.5 + Math.sin(b * 1.5) * 1.8,
+    Math.sin(theta) * rad
+  );
+  berry.userData = { speed: 0.008 + Math.random() * 0.006, theta: theta, radius: rad, yBase: berry.position.y };
+  floatingOrbitGroup.add(berry);
+  berries.push(berry);
+}
+
+// Floating Citrus Slices (Juicy Golden Lemon/Orange wedges)
+const citrusMat = new THREE.MeshPhongMaterial({ color: 0xfacc15, shininess: 90, specular: 0xfffbeb, side: THREE.DoubleSide });
+const citrusSlices = [];
+for (let c = 0; c < 4; c++) {
+  const wedgeGeo = new THREE.CylinderGeometry(0.45, 0.45, 0.08, 16, 1, false, 0, Math.PI);
+  const wedge = new THREE.Mesh(wedgeGeo, citrusMat);
+  wedge.position.set(
+    (c % 2 === 0 ? 1 : -1) * (2.8 + c * 0.5),
+    0.8 + (c - 2) * 0.6,
+    (Math.random() - 0.5) * 2.5
+  );
+  wedge.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+  wedge.userData = { rotSpeedX: 0.015, rotSpeedY: 0.02, floatPhase: Math.random() * Math.PI * 2 };
+  floatingOrbitGroup.add(wedge);
+  citrusSlices.push(wedge);
+}
+
+// Nutrient / Flavor Glow Orbs & Steam Particles
+const particleCount = 45;
+const pGeo = new THREE.BufferGeometry();
+const pPositions = new Float32Array(particleCount * 3);
+const pVelocities = [];
+
+for (let p = 0; p < particleCount; p++) {
+  pPositions[p * 3] = (Math.random() - 0.5) * 3.5;
+  pPositions[p * 3 + 1] = -0.5 + Math.random() * 3.0;
+  pPositions[p * 3 + 2] = (Math.random() - 0.5) * 3.5;
+  pVelocities.push({
+    y: 0.008 + Math.random() * 0.012,
+    x: (Math.random() - 0.5) * 0.004,
+    z: (Math.random() - 0.5) * 0.004
+  });
+}
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+
+const pMat = new THREE.PointsMaterial({
+  color: 0x86efac,
+  size: 0.09,
+  transparent: true,
+  opacity: 0.75,
+  blending: THREE.AdditiveBlending
+});
+const steamParticles = new THREE.Points(pGeo, pMat);
+scene.add(steamParticles);
+
+// Interactive Mouse Parallax
+let mouseX = 0;
+let mouseY = 0;
+let targetX = 0;
+let targetY = 0;
+
+window.addEventListener('mousemove', (e) => {
+  const normX = (e.clientX / window.innerWidth) * 2 - 1;
+  const normY = -(e.clientY / window.innerHeight) * 2 + 1;
+  targetX = normX * 0.8;
+  targetY = normY * 0.5;
+});
+
+// Window Resize handling
+window.addEventListener('resize', () => {
+  const newW = container.clientWidth || window.innerWidth;
+  const newH = container.clientHeight || window.innerHeight;
+  camera.aspect = newW / newH;
+  camera.updateProjectionMatrix();
+  renderer.setSize(newW, newH);
+});
+
+// Animation Loop
+let clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const elapsedTime = clock.getElapsedTime();
+
+  // Smooth mouse interpolation
+  mouseX += (targetX - mouseX) * 0.05;
+  mouseY += (targetY - mouseY) * 0.05;
+
+  // Gentle floating & tilt of main bowl
+  heroPlateGroup.rotation.y = elapsedTime * 0.22 + mouseX * 0.6;
+  heroPlateGroup.rotation.x = 0.35 + Math.sin(elapsedTime * 0.8) * 0.06 - mouseY * 0.4;
+  heroPlateGroup.position.y = Math.sin(elapsedTime * 1.2) * 0.12;
+
+  // Orbiting Berries
+  berries.forEach((b) => {
+    b.userData.theta += b.userData.speed;
+    b.position.x = Math.cos(b.userData.theta) * b.userData.radius;
+    b.position.z = Math.sin(b.userData.theta) * b.userData.radius;
+    b.position.y = b.userData.yBase + Math.sin(elapsedTime * 2.0 + b.userData.theta) * 0.35;
+    b.rotation.x += 0.02;
+    b.rotation.y += 0.03;
+  });
+
+  // Citrus wedges spinning and drifting
+  citrusSlices.forEach((c, idx) => {
+    c.rotation.x += c.userData.rotSpeedX;
+    c.rotation.y += c.userData.rotSpeedY;
+    c.position.y += Math.sin(elapsedTime * 1.5 + c.userData.floatPhase) * 0.003;
+  });
+
+  // Upward aroma / nutrient steam simulation
+  const positions = steamParticles.geometry.attributes.position.array;
+  for (let i = 0; i < particleCount; i++) {
+    positions[i * 3 + 1] += pVelocities[i].y;
+    positions[i * 3] += pVelocities[i].x;
+    positions[i * 3 + 2] += pVelocities[i].z;
+
+    // Reset when rising past top threshold
+    if (positions[i * 3 + 1] > 2.8) {
+      positions[i * 3 + 1] = -0.6;
+      positions[i * 3] = (Math.random() - 0.5) * 2.0;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 2.0;
+    }
+  }
+  steamParticles.geometry.attributes.position.needsUpdate = true;
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_12 -->
+</body>
+</html>
